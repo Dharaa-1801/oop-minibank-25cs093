@@ -1,0 +1,16 @@
+# Compiled class files and build output
+out/
+bin/
+*.class
+
+# Editor / IDE files
+.vscode/
+.idea/
+*.iml
+
+# Runtime data created by MiniBank (accounts, logs)
+data/
+
+# OS files
+.DS_Store
+Thumbs.db
