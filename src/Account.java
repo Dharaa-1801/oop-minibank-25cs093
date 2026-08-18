@@ -1,41 +1,89 @@
-public class Account {
+public class Account
+{
     private final String accountNumber;
     private String ownerName;
-    private long balance;            // whole rupees
-    private boolean active;
-    private static int counter = 1;
+    private long balance;
+    private boolean isActive;
+    private static long accountCounter;
 
-    public Account(String ownerName, long openingBalance) {
+    private static String generateAccountNumber()
+    {
+        accountCounter++;
+        return "ACC" + accountCounter;
+    }
+    public Account(String ownerName,long balance)
+    {
+        this.ownerName=ownerName;
+        this.balance=balance;
+        this.isActive=true;
         this.accountNumber = generateAccountNumber();
-        this.ownerName = ownerName;
-        this.balance = openingBalance;
-        this.active = true;
     }
-    public Account(String ownerName) { this(ownerName, 0); }   // constructor chaining
-    private static String generateAccountNumber() { return String.format("AC%04d", counter++); }
+    public Account(String ownerName)
+    {
+        this(ownerName, 0);
+    }
+    public boolean deposit(long amount)
+    {
+        if(amount<=0)
+        {
+            System.out.println("Deposit amount must be positive");
+            return false;
+        }
+        balance+=amount;
+        return true;
+    }
+    public boolean withdraw(long amount)
+    {
+        if(amount<=0)
+        {
+            System.out.println("Withdraw amount must be positive");
+            return false;
+        }
+        if(amount>balance)
+        {
+            System.out.println("Insufficient balance");
+            return false;
+        }
+        balance-=amount;
+        return true;
+    }
 
-    public void deposit(long amount) { if (amount > 0) balance += amount; }
-    public boolean withdraw(long amount) {
-        if (amount > 0 && amount <= balance) { balance -= amount; return true; }
-        return false;                                          // insufficient funds
+    public long getBalance()
+    {
+        return balance;
     }
-    public String getAccountNumber() { return accountNumber; }
-    public String getOwnerName()     { return ownerName; }
-    public long getBalance()         { return balance; }
-    public boolean isActive()        { return active; }
-    // ---- new in Practical 3 ----
+
+    public String getAccountNumber()
+    {
+        return accountNumber;
+    }
+    public String getOwnerName()
+    {
+        return ownerName;
+    }
+    public boolean isActive()
+    {
+        return isActive;
+    }
+    
     public String toString() {
-        return accountNumber + " | " + ownerName + " | " + balance;
-    }
+    return "Account{" +
+            "accountNumber='" + accountNumber + '\'' +
+            ", ownerName='" + ownerName + '\'' +
+            ", balance=" + balance +
+            '}';
+}
 
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Account)) return false;
-        Account other = (Account) o;
-        return accountNumber.equals(other.accountNumber);
-    }
+public boolean equals(Object o) {
 
-    public int hashCode() {
-        return java.util.Objects.hashCode(accountNumber);
-    }
+    if (this == o)
+        return true;
+
+    if (!(o instanceof Account))
+        return false;
+
+    Account other = (Account) o;
+
+    return accountNumber.equals(other.accountNumber);
+}
 }
