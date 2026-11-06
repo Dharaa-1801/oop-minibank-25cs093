@@ -33,6 +33,8 @@ public class MiniBank {
         System.out.println("Customer address city: " + customer.getAddress().getCity());
         System.out.println("Cloned customer ID: " + clonedCustomer.getCustomerId());
 
+        demonstrateValidationAndCommands(accounts[0]);
+
         try (Scanner scanner = new Scanner(System.in)) {
             MenuOption selectedOption;
 
@@ -56,6 +58,32 @@ public class MiniBank {
                 }
             } while (selectedOption != MenuOption.EXIT);
         }
+    }
+
+    private static void demonstrateValidationAndCommands(Account account) {
+        System.out.println("\n----- Validation Tests -----");
+        printValidation("Mobile", Validator.isValidMobile("9876543210"),
+                Validator.isValidMobile("12345"));
+        printValidation("Email", Validator.isValidEmail("alice@example.com"),
+                Validator.isValidEmail("alice@example"));
+        printValidation("PAN", Validator.isValidPan("ABCDE1234F"),
+                Validator.isValidPan("ABC123"));
+        printValidation("IFSC", Validator.isValidIfsc("SBIN0001234"),
+                Validator.isValidIfsc("INVALID"));
+
+        Command command = CommandParser.parse(
+                "DEPOSIT " + account.getAccountNumber() + " 500");
+        System.out.println("\n----- Parsed Command -----");
+        System.out.println("Type: " + command.type());
+        System.out.println("Account: " + command.accountNumber());
+        System.out.println("Amount: " + command.amount());
+
+        System.out.println("\n" + StatementFormatter.buildStatement(account));
+    }
+
+    private static void printValidation(String name, boolean valid, boolean invalid) {
+        System.out.println(name + " valid input: " + valid);
+        System.out.println(name + " invalid input: " + invalid);
     }
 
     private static void displayMenu() {
