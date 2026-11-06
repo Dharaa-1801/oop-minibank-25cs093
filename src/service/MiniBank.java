@@ -6,6 +6,7 @@ import model.Customer;
 import model.FixedDepositAccount;
 import model.SavingsAccount;
 import model.WithdrawRule;
+import util.AnnotationValidator;
 import util.Command;
 import util.CommandParser;
 import util.StatementFormatter;
@@ -56,6 +57,7 @@ public class MiniBank {
 
         demonstrateWithdrawRules(accounts[0]);
         demonstrateValidationAndCommands(accounts[0]);
+        demonstrateAnnotationValidation();
 
         try (Scanner scanner = new Scanner(System.in)) {
             MenuOption selectedOption;
@@ -101,6 +103,14 @@ public class MiniBank {
         System.out.println("Amount: " + command.amount());
 
         System.out.println("\n" + StatementFormatter.buildStatement(account));
+    }
+
+    private static void demonstrateAnnotationValidation() {
+        Account invalidAccount = new SavingsAccount("Invalid Account", -100, 0);
+        System.out.println("\n----- Annotation Validation -----");
+        for (String error : AnnotationValidator.validate(invalidAccount)) {
+            System.out.println(error);
+        }
     }
 
     private static void demonstrateWithdrawRules(Account account) {
