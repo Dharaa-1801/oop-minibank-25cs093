@@ -1,4 +1,18 @@
+package service;
+
+import model.Account;
+import model.CurrentAccount;
+import model.Customer;
+import model.FixedDepositAccount;
+import model.SavingsAccount;
+import model.WithdrawRule;
+import util.Command;
+import util.CommandParser;
+import util.StatementFormatter;
+
 import java.util.Scanner;
+
+import static util.Validator.*;
 
 public class MiniBank {
     public static void main(String[] args) {
@@ -18,7 +32,8 @@ public class MiniBank {
         System.out.println("Fixed deposit withdrawal allowed: " + accounts[2].withdraw(250));
 
         for (Account account : accounts) {
-            System.out.println(account + ", interest rate=" + account.interestRate() + "%");
+            System.out.println(account + ", interest rate=" + account.interestRate()
+                    + "%, yearly interest=" + account.yearlyInterest());
             if (account instanceof SavingsAccount savingsAccount) {
                 System.out.println("Savings minimum balance rule applies to "
                         + savingsAccount.getOwnerName());
@@ -39,6 +54,7 @@ public class MiniBank {
         System.out.println("Customer address city: " + customer.getAddress().getCity());
         System.out.println("Cloned customer ID: " + clonedCustomer.getCustomerId());
 
+        demonstrateWithdrawRules(accounts[0]);
         demonstrateValidationAndCommands(accounts[0]);
 
         try (Scanner scanner = new Scanner(System.in)) {
@@ -68,14 +84,14 @@ public class MiniBank {
 
     private static void demonstrateValidationAndCommands(Account account) {
         System.out.println("\n----- Validation Tests -----");
-        printValidation("Mobile", Validator.isValidMobile("9876543210"),
-                Validator.isValidMobile("12345"));
-        printValidation("Email", Validator.isValidEmail("alice@example.com"),
-                Validator.isValidEmail("alice@example"));
-        printValidation("PAN", Validator.isValidPan("ABCDE1234F"),
-                Validator.isValidPan("ABC123"));
-        printValidation("IFSC", Validator.isValidIfsc("SBIN0001234"),
-                Validator.isValidIfsc("INVALID"));
+        printValidation("Mobile", isValidMobile("9876543210"),
+                isValidMobile("12345"));
+        printValidation("Email", isValidEmail("alice@example.com"),
+                isValidEmail("alice@example"));
+        printValidation("PAN", isValidPan("ABCDE1234F"),
+                isValidPan("ABC123"));
+        printValidation("IFSC", isValidIfsc("SBIN0001234"),
+                isValidIfsc("INVALID"));
 
         Command command = CommandParser.parse(
                 "DEPOSIT " + account.getAccountNumber() + " 500");
@@ -85,6 +101,20 @@ public class MiniBank {
         System.out.println("Amount: " + command.amount());
 
         System.out.println("\n" + StatementFormatter.buildStatement(account));
+    }
+
+    private static void demonstrateWithdrawRules(Account account) {
+        WithdrawRule anonymousRule = new WithdrawRule() {
+            @Override
+            public boolean allow(Account candidate, long amount) {
+                return candidate.canWithdraw(amount);
+            }
+        };
+        WithdrawRule lambdaRule = (candidate, amount) -> candidate.canWithdraw(amount);
+
+        System.out.println("\nAnonymous withdraw rule: "
+                + anonymousRule.allow(account, 100));
+        System.out.println("Lambda withdraw rule: " + lambdaRule.allow(account, 100));
     }
 
     private static void printValidation(String name, boolean valid, boolean invalid) {

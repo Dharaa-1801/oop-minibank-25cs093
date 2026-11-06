@@ -1,4 +1,8 @@
-public abstract class Account {
+package model;
+
+import java.util.Objects;
+
+public abstract class Account implements Transactable, InterestBearing {
     private final String accountNumber;
     private String ownerName;
     private long balance;
@@ -20,10 +24,12 @@ public abstract class Account {
         return String.format("AC%04d", ++accountCounter);
     }
 
+    @Override
     public void deposit(long amount) {
         balance += amount;
     }
 
+    @Override
     public boolean withdraw(long amount) {
         if (!canWithdraw(amount)) {
             return false;
@@ -74,6 +80,6 @@ public abstract class Account {
 
     @Override
     public int hashCode() {
-        return accountNumber.hashCode();
+        return Objects.hash(accountNumber);
     }
 }

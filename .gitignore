@@ -1,6 +1,7 @@
 # Compiled class files and build output
 out/
 bin/
+target/
 *.class
 
 # Editor / IDE files
