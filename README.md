@@ -58,3 +58,30 @@ Use `lab-02`, `lab-03`, … for later labs. Commit as you finish each class, not
 ```
 
 From Lab 6 onward you will organise `src/` into packages (`com/minibank/...`).
+
+## Packaged MiniBank build
+
+The completed project is under `src/com/minibank/`. The older flat files in
+`src/` are retained as the earlier lab submissions; the Maven build compiles
+only the packaged application and its tests.
+
+From the repository root, run:
+
+```powershell
+& "C:\maven-mvnd\maven-mvnd\bin\mvnd.exe" clean test package
+java -jar target\oop-minibank-25cs093-1.0.jar
+```
+
+The application stores account state, transaction logs, and the daily report
+under `data/`. The menu supports opening savings accounts, deposits,
+withdrawals, transfers, statements, sorted account listing, and report
+generation.
+
+JUnit tests are in `src/test/java/com/minibank/BankServiceTest.java`.
+
+## Practicals 1–14
+
+The coursework is separated into one folder per practical in
+[`practicals/`](practicals/). Start with the
+[Practical 1–14 index](practicals/README.md); the practicals are cumulative
+and should be completed in order.
