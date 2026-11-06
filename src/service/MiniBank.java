@@ -31,6 +31,7 @@ public class MiniBank {
 
         demonstrateExceptionHandling(accounts);
         demonstrateConcurrency();
+        demonstrateTransactionEngine();
 
         for (Account account : accounts) {
             System.out.println(account + ", interest rate=" + account.interestRate()
@@ -155,6 +156,63 @@ public class MiniBank {
         } catch (InterruptedException exception) {
             Thread.currentThread().interrupt();
             System.out.println("Concurrency demo interrupted.");
+        }
+    }
+
+    private static void demonstrateTransactionEngine() {
+        Account account = new CurrentAccount("Processor User", 0, 0);
+        TransactionProcessor processor = new TransactionProcessor();
+        int taskCount = 20;
+
+        System.out.println("\n----- Transaction Processor Demo -----");
+        for (int i = 0; i < taskCount; i++) {
+            processor.submit(TransactionProcessor.depositTask(account, 10));
+        }
+        try {
+            processor.stop();
+            System.out.println("Managed tasks completed: " + taskCount);
+            System.out.println("Processed balance: " + account.getBalance());
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            System.out.println("Transaction processor interrupted.");
+        }
+
+        TransactionBuffer buffer = new TransactionBuffer(2);
+        Thread producer = new Thread(() -> {
+            try {
+                buffer.put("DEPOSIT 100");
+                buffer.put("WITHDRAW 50");
+                buffer.put("TRANSFER 25");
+                System.out.println("Producer completed.");
+            } catch (InterruptedException exception) {
+                Thread.currentThread().interrupt();
+            }
+        }, "Producer");
+        Thread consumer = new Thread(() -> {
+            try {
+                for (int i = 0; i < 3; i++) {
+                    System.out.println("Consumer processed: " + buffer.take());
+                }
+            } catch (InterruptedException exception) {
+                Thread.currentThread().interrupt();
+            }
+        }, "Consumer");
+        producer.start();
+        consumer.start();
+        try {
+            producer.join();
+            consumer.join();
+            System.out.println("Producer-consumer coordination completed.");
+            Account first = new CurrentAccount("Transfer A", 100, 0);
+            Account second = new CurrentAccount("Transfer B", 100, 0);
+            TransactionProcessor.transferSafely(first, second, 25);
+            TransactionProcessor.transferSafely(second, first, 25);
+            System.out.println("Ordered transfers completed without deadlock.");
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            System.out.println("Producer-consumer demo interrupted.");
+        } catch (BankException exception) {
+            System.out.println("Ordered transfer failed: " + exception.getMessage());
         }
     }
 
