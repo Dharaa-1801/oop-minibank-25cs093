@@ -22,79 +22,97 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 import static util.Validator.*;
 
 public class MiniBank {
     public static void main(String[] args) {
-        BankInfo bankInfo = new BankInfo("MiniBank", "Main Branch");
-        System.out.println(bankInfo);
+        Path stateFile = Path.of("data", "accounts.dat");
+        Path logDirectory = Path.of("data", "logs");
+        Path reportFile = Path.of("data", "daily-report.txt");
+        Account[] accounts = loadAccounts(stateFile);
+        BankService service = new BankService(accounts, logDirectory.resolve("transactions.log"));
 
-        Account[] accounts = {
-                new SavingsAccount("Alice", 1_000, 500),
-                new CurrentAccount("Bob", 500, 1_000),
-                new FixedDepositAccount("Charlie", 2_000)
-        };
-
-        demonstrateExceptionHandling(accounts);
-        demonstrateConcurrency();
-        demonstrateTransactionEngine();
-        demonstrateCollections(accounts);
-
-        for (Account account : accounts) {
-            System.out.println(account + ", interest rate=" + account.interestRate()
-                    + "%, yearly interest=" + account.yearlyInterest());
-            if (account instanceof SavingsAccount savingsAccount) {
-                System.out.println("Savings minimum balance rule applies to "
-                        + savingsAccount.getOwnerName());
+        System.out.println(new BankInfo("MiniBank", "Main Branch"));
+        try (Scanner scanner = new Scanner(System.in)) {
+            boolean running = true;
+            while (running) {
+                displayMenu();
+                try {
+                    switch (Integer.parseInt(scanner.nextLine())) {
+                        case 1 -> openAccount(scanner, service);
+                        case 2 -> deposit(scanner, service);
+                        case 3 -> withdraw(scanner, service);
+                        case 4 -> transfer(scanner, service);
+                        case 5 -> System.out.println(service.statement(
+                                prompt(scanner, "Account number: ")));
+                        case 6 -> service.listAccounts().forEach(System.out::println);
+                        case 7 -> System.out.println(Files.readString(
+                                service.generateReport(logDirectory, reportFile)));
+                        case 8 -> {
+                            running = false;
+                            System.out.println("Goodbye!");
+                        }
+                        default -> System.out.println("Invalid menu choice.");
+                    }
+                } catch (BankException | IOException | NumberFormatException exception) {
+                    System.out.println("Operation failed: " + exception.getMessage());
+                }
             }
         }
-
-        Account firstAccount = accounts[0];
-        Account secondAccount = accounts[1];
-        System.out.println("First account equals second account: "
-                + firstAccount.equals(secondAccount));
-        System.out.println("First account is an Account: "
-                + (firstAccount instanceof Account));
-
-        Customer customer = new Customer("Alice", "alice@example.com", "9876543210");
-        customer.setAddress(new Customer.Address("12 Main Road", "Nadiad", "387001"));
-        Customer clonedCustomer = customer.clone();
-        System.out.println("Customer ID: " + customer.getCustomerId());
-        System.out.println("Customer address city: " + customer.getAddress().getCity());
-        System.out.println("Cloned customer ID: " + clonedCustomer.getCustomerId());
-
-        demonstrateWithdrawRules(accounts[0]);
-        demonstrateValidationAndCommands(accounts[0]);
-        demonstrateAnnotationValidation();
-        demonstrateTryWithResources();
-        demonstratePersistence(accounts);
-        demonstrateRepository(accounts);
-
-        try (Scanner scanner = new Scanner(System.in)) {
-            MenuOption selectedOption;
-
-            do {
-                displayMenu();
-                int choice = Integer.parseInt(scanner.nextLine());
-                selectedOption = switch (choice) {
-                    case 1 -> MenuOption.OPEN_ACCOUNT;
-                    case 2 -> MenuOption.DEPOSIT;
-                    case 3 -> MenuOption.WITHDRAW;
-                    case 4 -> MenuOption.TRANSFER;
-                    case 5 -> MenuOption.EXIT;
-                    default -> throw new IllegalArgumentException("Invalid menu choice");
-                };
-
-                if (selectedOption == MenuOption.EXIT) {
-                    System.out.println("Goodbye!");
-                } else {
-                    System.out.println(selectedOption
-                            + " - to be implemented in a later practical");
-                }
-
-            } while (selectedOption != MenuOption.EXIT);
+        try {
+            StatePersister.save(service.listAccounts().toArray(Account[]::new), stateFile);
+            System.out.println("Account state saved.");
+        } catch (IOException exception) {
+            System.out.println("Could not save account state: " + exception.getMessage());
         }
+    }
+
+    private static Account[] loadAccounts(Path stateFile) {
+        try {
+            if (Files.exists(stateFile)) {
+                return StatePersister.load(stateFile);
+            }
+        } catch (IOException | ClassNotFoundException exception) {
+            System.out.println("Could not load saved accounts: " + exception.getMessage());
+        }
+        return new Account[0];
+    }
+
+    private static void openAccount(Scanner scanner, BankService service)
+            throws InvalidAmountException {
+        Account account = service.openAccount(prompt(scanner, "Owner name: "),
+                prompt(scanner, "Type (SAVINGS/CURRENT/FIXED): "),
+                Long.parseLong(prompt(scanner, "Opening balance: ")));
+        System.out.println("Opened account: " + account);
+    }
+
+    private static void deposit(Scanner scanner, BankService service)
+            throws BankException, IOException {
+        service.deposit(prompt(scanner, "Account number: "),
+                Long.parseLong(prompt(scanner, "Amount: ")));
+        System.out.println("Deposit completed.");
+    }
+
+    private static void withdraw(Scanner scanner, BankService service)
+            throws BankException, IOException {
+        service.withdraw(prompt(scanner, "Account number: "),
+                Long.parseLong(prompt(scanner, "Amount: ")));
+        System.out.println("Withdrawal completed.");
+    }
+
+    private static void transfer(Scanner scanner, BankService service)
+            throws BankException, IOException {
+        service.transfer(prompt(scanner, "From account: "),
+                prompt(scanner, "To account: "),
+                Long.parseLong(prompt(scanner, "Amount: ")));
+        System.out.println("Transfer completed.");
+    }
+
+    private static String prompt(Scanner scanner, String message) {
+        System.out.print(message);
+        return scanner.nextLine().trim();
     }
 
     private static void demonstrateExceptionHandling(Account[] accounts) {
@@ -348,7 +366,10 @@ public class MiniBank {
         System.out.println("2. Deposit");
         System.out.println("3. Withdraw");
         System.out.println("4. Transfer");
-        System.out.println("5. Exit");
+        System.out.println("5. Statement");
+        System.out.println("6. List accounts");
+        System.out.println("7. Daily report");
+        System.out.println("8. Exit");
         System.out.print("Enter your choice: ");
     }
 }

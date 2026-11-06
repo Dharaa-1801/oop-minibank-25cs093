@@ -5,5 +5,8 @@ public enum MenuOption {
     DEPOSIT,
     WITHDRAW,
     TRANSFER,
+    STATEMENT,
+    LIST_ACCOUNTS,
+    REPORT,
     EXIT
 }

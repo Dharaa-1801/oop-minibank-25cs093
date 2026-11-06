@@ -61,9 +61,8 @@ From Lab 6 onward you will organise `src/` into packages (`com/minibank/...`).
 
 ## Packaged MiniBank build
 
-The completed project is under `src/com/minibank/`. The older flat files in
-`src/` are retained as the earlier lab submissions; the Maven build compiles
-only the packaged application and its tests.
+The completed project is under `src/`, organised into `model`, `util`,
+`service`, and `exception` packages.
 
 From the repository root, run:
 
@@ -73,8 +72,9 @@ java -jar target\oop-minibank-25cs093-1.0.jar
 ```
 
 The application stores account state, transaction logs, and the daily report
-under `data/`. The menu supports opening savings accounts, deposits,
-withdrawals, transfers, statements, sorted account listing, and report
-generation.
+under `data/`. The menu supports opening savings/current/fixed-deposit
+accounts, deposits, withdrawals, transfers, statements, account listing, and
+daily report generation. Account state is loaded at startup and saved when the
+application exits.
 
-JUnit tests are in `src/test/java/com/minibank/BankServiceTest.java`.
+JUnit tests are in `src/test/java/service/BankServiceTest.java`.

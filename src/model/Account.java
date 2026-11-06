@@ -5,6 +5,8 @@ import exception.AccountNotFoundException;
 import exception.InsufficientFundsException;
 import exception.InvalidAmountException;
 import java.io.Serializable;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Objects;
 import model.annotation.Id;
 import model.annotation.MaxLength;
@@ -35,6 +37,15 @@ public abstract class Account implements Transactable, InterestBearing,
 
     private static String generateAccountNumber() {
         return String.format("AC%04d", ++accountCounter);
+    }
+
+    private void readObject(ObjectInputStream input)
+            throws IOException, ClassNotFoundException {
+        input.defaultReadObject();
+        long number = Long.parseLong(accountNumber.substring(2));
+        synchronized (Account.class) {
+            accountCounter = Math.max(accountCounter, number);
+        }
     }
 
     @Override

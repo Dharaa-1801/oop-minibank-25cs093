@@ -8,6 +8,7 @@ public final class Validator {
             Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)+$");
     private static final Pattern PAN = Pattern.compile("^[A-Z]{5}[0-9]{4}[A-Z]$");
     private static final Pattern IFSC = Pattern.compile("^[A-Z]{4}0[A-Z0-9]{6}$");
+    private static final Pattern ACCOUNT_NUMBER = Pattern.compile("^AC[0-9]{4,}$");
 
     private Validator() {
     }
@@ -26,5 +27,9 @@ public final class Validator {
 
     public static boolean isValidIfsc(String ifsc) {
         return ifsc != null && IFSC.matcher(ifsc).matches();
+    }
+
+    public static boolean isValidAccountNumber(String accountNumber) {
+        return accountNumber != null && ACCOUNT_NUMBER.matcher(accountNumber).matches();
     }
 }
