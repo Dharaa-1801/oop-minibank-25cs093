@@ -12,8 +12,14 @@ import model.WithdrawRule;
 import util.AnnotationValidator;
 import util.Command;
 import util.CommandParser;
+import util.ReportGenerator;
+import util.StatePersister;
 import util.StatementFormatter;
+import util.TransactionLog;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Scanner;
 
 import static util.Validator.*;
@@ -60,6 +66,7 @@ public class MiniBank {
         demonstrateValidationAndCommands(accounts[0]);
         demonstrateAnnotationValidation();
         demonstrateTryWithResources();
+        demonstratePersistence(accounts);
 
         try (Scanner scanner = new Scanner(System.in)) {
             MenuOption selectedOption;
@@ -128,6 +135,28 @@ public class MiniBank {
     private static void demonstrateTryWithResources() {
         try (BankSession session = new BankSession()) {
             System.out.println("Processing a resource-safe bank session.");
+        }
+    }
+
+    private static void demonstratePersistence(Account[] accounts) {
+        Path stateFile = Path.of("data", "accounts.dat");
+        Path logFile = Path.of("data", "logs", "transactions.log");
+        Path reportFile = Path.of("data", "daily-report.txt");
+
+        System.out.println("\n----- Persistence and Reporting -----");
+        try {
+            StatePersister.save(accounts, stateFile);
+            Account[] loadedAccounts = StatePersister.load(stateFile);
+            System.out.println("Reloaded accounts:");
+            for (Account account : loadedAccounts) {
+                System.out.println(account);
+            }
+            TransactionLog.append(logFile, "DEPOSIT 500 AC0001");
+            TransactionLog.append(logFile, "WITHDRAW 200 AC0001");
+            Path generatedReport = ReportGenerator.generate(logFile.getParent(), reportFile);
+            System.out.println(Files.readString(generatedReport));
+        } catch (IOException | ClassNotFoundException exception) {
+            System.out.println("Persistence operation failed: " + exception.getMessage());
         }
     }
 
