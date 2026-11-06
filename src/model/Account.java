@@ -10,7 +10,8 @@ import model.annotation.Id;
 import model.annotation.MaxLength;
 import model.annotation.Positive;
 
-public abstract class Account implements Transactable, InterestBearing, Serializable {
+public abstract class Account implements Transactable, InterestBearing,
+        Comparable<Account>, Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     private final String accountNumber;
@@ -78,6 +79,11 @@ public abstract class Account implements Transactable, InterestBearing, Serializ
     public abstract double interestRate();
 
     public abstract boolean canWithdraw(long amount);
+
+    @Override
+    public int compareTo(Account other) {
+        return accountNumber.compareTo(other.accountNumber);
+    }
 
     public String getAccountNumber() {
         return accountNumber;

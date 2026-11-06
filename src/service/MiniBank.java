@@ -38,6 +38,7 @@ public class MiniBank {
         demonstrateExceptionHandling(accounts);
         demonstrateConcurrency();
         demonstrateTransactionEngine();
+        demonstrateCollections(accounts);
 
         for (Account account : accounts) {
             System.out.println(account + ", interest rate=" + account.interestRate()
@@ -197,6 +198,7 @@ public class MiniBank {
         for (int i = 0; i < taskCount; i++) {
             processor.submit(TransactionProcessor.depositTask(account, 10));
         }
+
         try {
             processor.stop();
             System.out.println("Managed tasks completed: " + taskCount);
@@ -242,6 +244,35 @@ public class MiniBank {
             System.out.println("Producer-consumer demo interrupted.");
         } catch (BankException exception) {
             System.out.println("Ordered transfer failed: " + exception.getMessage());
+        }
+    }
+
+    private static void demonstrateCollections(Account[] accounts) {
+        AccountStore store = new AccountStore();
+        for (Account account : accounts) {
+            store.add(account);
+        }
+        store.addTransaction("DEPOSIT 500 " + accounts[0].getAccountNumber());
+        store.addTransaction("WITHDRAW 200 " + accounts[1].getAccountNumber());
+
+        TransactionProcessor processor = new TransactionProcessor();
+        for (Account account : accounts) {
+            processor.addAccount(account);
+        }
+
+        System.out.println("\n----- Collections Demo -----");
+        System.out.println("Thread-safe account count: " + processor.accountCount());
+        System.out.println("Accounts sorted by balance:");
+        for (Account account : store.sortedByBalance()) {
+            System.out.println(account);
+        }
+        System.out.println("Transaction history entries: "
+                + store.getTransactionHistory().size());
+        try {
+            processor.stop();
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            System.out.println("Collections demo interrupted.");
         }
     }
 
