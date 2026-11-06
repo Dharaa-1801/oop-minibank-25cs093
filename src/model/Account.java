@@ -1,5 +1,9 @@
 package model;
 
+import exception.BankException;
+import exception.AccountNotFoundException;
+import exception.InsufficientFundsException;
+import exception.InvalidAmountException;
 import java.util.Objects;
 import model.annotation.Id;
 import model.annotation.MaxLength;
@@ -31,17 +35,42 @@ public abstract class Account implements Transactable, InterestBearing {
     }
 
     @Override
-    public void deposit(long amount) {
+    public void deposit(long amount) throws InvalidAmountException {
+        if (amount <= 0) {
+            throw new InvalidAmountException(amount);
+        }
         balance += amount;
     }
 
     @Override
-    public boolean withdraw(long amount) {
+    public boolean withdraw(long amount)
+            throws InsufficientFundsException, InvalidAmountException {
+        if (amount <= 0) {
+            throw new InvalidAmountException(amount);
+        }
         if (!canWithdraw(amount)) {
-            return false;
+            throw new InsufficientFundsException(Math.max(0, amount - balance));
         }
         balance -= amount;
         return true;
+    }
+
+    public void transfer(Account to, long amount) throws BankException {
+        boolean completed = false;
+        try {
+            if (to == null) {
+                throw new AccountNotFoundException("destination");
+            }
+            withdraw(amount);
+            to.deposit(amount);
+            completed = true;
+        } catch (BankException exception) {
+            throw new BankException("Transfer failed: " + exception.getMessage(), exception);
+        } finally {
+            if (!completed) {
+                System.out.println("Transfer did not complete.");
+            }
+        }
     }
 
     public abstract double interestRate();

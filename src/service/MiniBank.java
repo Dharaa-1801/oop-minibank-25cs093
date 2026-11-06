@@ -1,5 +1,8 @@
 package service;
 
+import exception.BankException;
+import exception.InsufficientFundsException;
+import exception.InvalidAmountException;
 import model.Account;
 import model.CurrentAccount;
 import model.Customer;
@@ -26,11 +29,7 @@ public class MiniBank {
                 new FixedDepositAccount("Charlie", 2_000)
         };
 
-        accounts[0].deposit(500);
-        accounts[1].deposit(750);
-        System.out.println("Savings withdrawal allowed: " + accounts[0].withdraw(1_000));
-        System.out.println("Current withdrawal allowed: " + accounts[1].withdraw(2_500));
-        System.out.println("Fixed deposit withdrawal allowed: " + accounts[2].withdraw(250));
+        demonstrateExceptionHandling(accounts);
 
         for (Account account : accounts) {
             System.out.println(account + ", interest rate=" + account.interestRate()
@@ -58,6 +57,7 @@ public class MiniBank {
         demonstrateWithdrawRules(accounts[0]);
         demonstrateValidationAndCommands(accounts[0]);
         demonstrateAnnotationValidation();
+        demonstrateTryWithResources();
 
         try (Scanner scanner = new Scanner(System.in)) {
             MenuOption selectedOption;
@@ -80,7 +80,52 @@ public class MiniBank {
                     System.out.println(selectedOption
                             + " - to be implemented in a later practical");
                 }
+
             } while (selectedOption != MenuOption.EXIT);
+        }
+    }
+
+    private static void demonstrateExceptionHandling(Account[] accounts) {
+        try {
+            accounts[0].deposit(500);
+            accounts[1].deposit(750);
+            System.out.println("Savings withdrawal allowed: "
+                    + accounts[0].withdraw(1_000));
+            System.out.println("Current withdrawal allowed: "
+                    + accounts[1].withdraw(2_500));
+            System.out.println("Fixed deposit withdrawal allowed: "
+                    + accounts[2].withdraw(250));
+            accounts[0].transfer(accounts[1], 100);
+        } catch (InsufficientFundsException exception) {
+            System.out.println("Withdrawal failed: " + exception.getMessage());
+        } catch (InvalidAmountException exception) {
+            System.out.println("Amount error: " + exception.getMessage());
+        } catch (BankException exception) {
+            System.out.println("Bank operation failed: " + exception.getMessage());
+        } finally {
+            System.out.println("Bank operation handling completed.");
+        }
+
+        try {
+            accounts[0].deposit(0);
+        } catch (InvalidAmountException exception) {
+            System.out.println("Invalid amount handled: " + exception.getMessage());
+        } finally {
+            System.out.println("Invalid amount handling completed.");
+        }
+
+        try {
+            accounts[0].transfer(accounts[1], 5_000);
+        } catch (BankException exception) {
+            System.out.println("Transfer failed: " + exception.getMessage());
+        } finally {
+            System.out.println("Transfer handling completed.");
+        }
+    }
+
+    private static void demonstrateTryWithResources() {
+        try (BankSession session = new BankSession()) {
+            System.out.println("Processing a resource-safe bank session.");
         }
     }
 
