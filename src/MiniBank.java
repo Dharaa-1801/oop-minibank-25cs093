@@ -16,11 +16,22 @@ public class MiniBank {
         accounts[2].withdraw(250);
 
         for (Account account : accounts) {
-            System.out.printf("%s - %s: Rs. %d%n",
-                    account.getAccountNumber(),
-                    account.getOwnerName(),
-                    account.getBalance());
+            System.out.println(account);
         }
+
+        Account firstAccount = accounts[0];
+        Account secondAccount = accounts[1];
+        System.out.println("First account equals second account: "
+                + firstAccount.equals(secondAccount));
+        System.out.println("First account is an Account: "
+                + (firstAccount instanceof Account));
+
+        Customer customer = new Customer("Alice", "alice@example.com", "9876543210");
+        customer.setAddress(new Customer.Address("12 Main Road", "Nadiad", "387001"));
+        Customer clonedCustomer = customer.clone();
+        System.out.println("Customer ID: " + customer.getCustomerId());
+        System.out.println("Customer address city: " + customer.getAddress().getCity());
+        System.out.println("Cloned customer ID: " + clonedCustomer.getCustomerId());
 
         try (Scanner scanner = new Scanner(System.in)) {
             MenuOption selectedOption;
