@@ -1,18 +1,18 @@
-public class Account {
+public abstract class Account {
     private final String accountNumber;
     private String ownerName;
     private long balance;
     private boolean active;
     private static long accountCounter;
 
-    public Account(String ownerName, long openingBalance) {
+    protected Account(String ownerName, long openingBalance) {
         this.accountNumber = generateAccountNumber();
         this.ownerName = ownerName;
         this.balance = openingBalance;
         this.active = true;
     }
 
-    public Account(String ownerName) {
+    protected Account(String ownerName) {
         this(ownerName, 0);
     }
 
@@ -25,12 +25,16 @@ public class Account {
     }
 
     public boolean withdraw(long amount) {
-        if (amount > balance) {
+        if (!canWithdraw(amount)) {
             return false;
         }
         balance -= amount;
         return true;
     }
+
+    public abstract double interestRate();
+
+    public abstract boolean canWithdraw(long amount);
 
     public String getAccountNumber() {
         return accountNumber;

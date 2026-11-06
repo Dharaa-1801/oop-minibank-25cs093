@@ -6,17 +6,23 @@ public class MiniBank {
         System.out.println(bankInfo);
 
         Account[] accounts = {
-                new Account("Alice", 1_000),
-                new Account("Bob"),
-                new Account("Charlie", 2_000)
+                new SavingsAccount("Alice", 1_000, 500),
+                new CurrentAccount("Bob", 500, 1_000),
+                new FixedDepositAccount("Charlie", 2_000)
         };
 
         accounts[0].deposit(500);
         accounts[1].deposit(750);
-        accounts[2].withdraw(250);
+        System.out.println("Savings withdrawal allowed: " + accounts[0].withdraw(1_000));
+        System.out.println("Current withdrawal allowed: " + accounts[1].withdraw(2_500));
+        System.out.println("Fixed deposit withdrawal allowed: " + accounts[2].withdraw(250));
 
         for (Account account : accounts) {
-            System.out.println(account);
+            System.out.println(account + ", interest rate=" + account.interestRate() + "%");
+            if (account instanceof SavingsAccount savingsAccount) {
+                System.out.println("Savings minimum balance rule applies to "
+                        + savingsAccount.getOwnerName());
+            }
         }
 
         Account firstAccount = accounts[0];
