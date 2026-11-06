@@ -13,6 +13,7 @@ import util.AnnotationValidator;
 import util.Command;
 import util.CommandParser;
 import util.ReportGenerator;
+import util.Repository;
 import util.StatePersister;
 import util.StatementFormatter;
 import util.TransactionLog;
@@ -68,6 +69,7 @@ public class MiniBank {
         demonstrateAnnotationValidation();
         demonstrateTryWithResources();
         demonstratePersistence(accounts);
+        demonstrateRepository(accounts);
 
         try (Scanner scanner = new Scanner(System.in)) {
             MenuOption selectedOption;
@@ -252,6 +254,7 @@ public class MiniBank {
         for (Account account : accounts) {
             store.add(account);
         }
+
         store.addTransaction("DEPOSIT 500 " + accounts[0].getAccountNumber());
         store.addTransaction("WITHDRAW 200 " + accounts[1].getAccountNumber());
 
@@ -274,6 +277,21 @@ public class MiniBank {
             Thread.currentThread().interrupt();
             System.out.println("Collections demo interrupted.");
         }
+    }
+
+    private static void demonstrateRepository(Account[] accounts) {
+        Repository<Account> repository = new Repository<>();
+        repository.saveAll(accounts);
+
+        System.out.println("\n----- Generic Repository Demo -----");
+        System.out.println("Fetched by id: "
+                + repository.findById(accounts[0].getAccountNumber()));
+        System.out.println("All repository accounts:");
+        for (Account account : repository.findAll()) {
+            System.out.println(account);
+        }
+        System.out.println("Average sample: "
+                + Repository.average(new Integer[]{100, 200, 300}));
     }
 
     private static void demonstrateValidationAndCommands(Account account) {
