@@ -78,10 +78,3 @@ withdrawals, transfers, statements, sorted account listing, and report
 generation.
 
 JUnit tests are in `src/test/java/com/minibank/BankServiceTest.java`.
-
-## Practicals 1–14
-
-The coursework is separated into one folder per practical in
-[`practicals/`](practicals/). Start with the
-[Practical 1–14 index](practicals/README.md); the practicals are cumulative
-and should be completed in order.
