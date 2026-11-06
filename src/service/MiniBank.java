@@ -30,6 +30,7 @@ public class MiniBank {
         };
 
         demonstrateExceptionHandling(accounts);
+        demonstrateConcurrency();
 
         for (Account account : accounts) {
             System.out.println(account + ", interest rate=" + account.interestRate()
@@ -126,6 +127,34 @@ public class MiniBank {
     private static void demonstrateTryWithResources() {
         try (BankSession session = new BankSession()) {
             System.out.println("Processing a resource-safe bank session.");
+        }
+    }
+
+    private static void demonstrateConcurrency() {
+        Account account = new CurrentAccount("Concurrent User", 0, 0);
+        int threadCount = 10;
+        int depositsPerThread = 1_000;
+        long amountPerDeposit = 1;
+        Thread[] workers = new Thread[threadCount];
+
+        System.out.println("\n----- Thread Safety Demo -----");
+        for (int i = 0; i < threadCount; i++) {
+            workers[i] = new Thread(
+                    new AccountWorker(account, depositsPerThread, amountPerDeposit),
+                    "AccountWorker-" + (i + 1));
+            workers[i].start();
+        }
+
+        try {
+            for (Thread worker : workers) {
+                worker.join();
+            }
+            long expectedBalance = threadCount * depositsPerThread * amountPerDeposit;
+            System.out.println("Expected balance: " + expectedBalance);
+            System.out.println("Final balance: " + account.getBalance());
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            System.out.println("Concurrency demo interrupted.");
         }
     }
 
