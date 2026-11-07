@@ -65,6 +65,8 @@ The system also maintains transaction records and supports account data persiste
 | 🔄 Fund Transfer | Transfer money between accounts |
 | 📄 Account Statements | View account transaction history |
 | 📋 Account Listing | Display available accounts |
+| ⚙️ Batch Processing | Process deposit and withdrawal commands concurrently |
+| 🧾 Audit Trail | View recorded transaction activity |
 | 🧾 Transaction Logging | Maintain transaction records |
 | 📊 Daily Reports | Generate transaction reports |
 | 💾 Data Persistence | Save and load account information |

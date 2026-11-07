@@ -49,15 +49,17 @@ public class MiniBank {
                         case 5 -> System.out.println(service.statement(
                                 prompt(scanner, "Account number: ")));
                         case 6 -> service.listAccounts().forEach(System.out::println);
-                        case 7 -> System.out.println(Files.readString(
+                        case 7 -> processBatch(scanner, service);
+                        case 8 -> System.out.println(Files.readString(
                                 service.generateReport(logDirectory, reportFile)));
-                        case 8 -> {
+                        case 9 -> showAuditTrail(logDirectory);
+                        case 10 -> {
                             running = false;
                             System.out.println("Goodbye!");
                         }
                         default -> System.out.println("Invalid menu choice.");
                     }
-                } catch (BankException | IOException | NumberFormatException exception) {
+                } catch (BankException | IOException | IllegalArgumentException exception) {
                     System.out.println("Operation failed: " + exception.getMessage());
                 }
             }
@@ -109,6 +111,29 @@ public class MiniBank {
                 prompt(scanner, "To account: "),
                 Long.parseLong(prompt(scanner, "Amount: ")));
         System.out.println("Transfer completed.");
+    }
+
+    private static void processBatch(Scanner scanner, BankService service)
+            throws BankException, IOException {
+        int count = Integer.parseInt(prompt(scanner, "Number of transactions: "));
+        ArrayList<Command> commands = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            commands.add(CommandParser.parse(
+                    prompt(scanner, "Transaction " + (i + 1)
+                            + " (DEPOSIT/WITHDRAW ACCOUNT AMOUNT): ")));
+        }
+        service.processBatch(commands);
+        System.out.println("Batch processing completed.");
+    }
+
+    private static void showAuditTrail(Path logDirectory) throws IOException {
+        Path logFile = logDirectory.resolve("transactions.log");
+        System.out.println("----- Audit Trail -----");
+        if (Files.exists(logFile)) {
+            System.out.println(Files.readString(logFile));
+        } else {
+            System.out.println("No transactions recorded.");
+        }
     }
 
     private static String prompt(Scanner scanner, String message) {
@@ -369,8 +394,10 @@ public class MiniBank {
         System.out.println("4. Transfer");
         System.out.println("5. Statement");
         System.out.println("6. List accounts");
-        System.out.println("7. Daily report");
-        System.out.println("8. Exit");
+        System.out.println("7. Process batch");
+        System.out.println("8. End-of-Day Report");
+        System.out.println("9. Audit Trail");
+        System.out.println("10. Save and Exit");
         System.out.print("Enter your choice: ");
     }
 }
