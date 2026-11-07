@@ -28,7 +28,6 @@ Built using **Java 17**, **Object-Oriented Programming**, and advanced Java conc
 - [Execution](#-execution)
 - [Testing](#-testing)
 - [Data Storage](#-data-storage)
-- [Screenshots](#-screenshots)
 - [Future Enhancements](#-future-enhancements)
 - [License](#-license)
 
@@ -436,10 +435,6 @@ The application maintains its runtime data in the `data/` directory.
 | `daily-report.txt` | Generated daily report |
 
 ---
-
-## 📸 Screenshots
-
-Add screenshots of your actual application execution here.
 
 ### Main Menu
 
