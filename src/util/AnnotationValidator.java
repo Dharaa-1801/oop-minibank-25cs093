@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+// Validates object fields using the project's custom annotations.
 public final class AnnotationValidator {
     private AnnotationValidator() {
     }

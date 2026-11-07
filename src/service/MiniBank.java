@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 import static util.Validator.*;
 
+// Runs the MiniBank console menu and coordinates application services.
 public class MiniBank {
     public static void main(String[] args) {
         Path stateFile = Path.of("data", "accounts.dat");

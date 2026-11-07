@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+// Provides the main banking operations used by the console application.
 public final class BankService {
     private final Repository<Account> repository = new Repository<>();
     private final Path logFile;

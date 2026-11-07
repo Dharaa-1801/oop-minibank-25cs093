@@ -2,6 +2,7 @@ package util;
 
 import java.util.regex.Pattern;
 
+// Provides reusable validation rules for banking input.
 public final class Validator {
     private static final Pattern MOBILE = Pattern.compile("^[6-9][0-9]{9}$");
     private static final Pattern EMAIL =

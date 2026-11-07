@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ConcurrentHashMap;
 
+// Processes account transactions using a managed worker pool.
 public final class TransactionProcessor {
     private final ExecutorService executor = Executors.newFixedThreadPool(4);
     private final ConcurrentHashMap<String, Account> accounts = new ConcurrentHashMap<>();

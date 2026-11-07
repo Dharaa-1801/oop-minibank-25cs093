@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+// Saves and loads account state using object serialization.
 public final class StatePersister {
     private StatePersister() {
     }

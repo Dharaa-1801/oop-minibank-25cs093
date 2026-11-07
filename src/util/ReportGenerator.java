@@ -8,6 +8,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
+// Builds daily summaries from transaction log files.
 public final class ReportGenerator {
     private ReportGenerator() {
     }

@@ -1,5 +1,6 @@
 package service;
 
+// Provides bounded producer-consumer storage for transaction commands.
 public final class TransactionBuffer {
     private final String[] transactions;
     private int count;
