@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+// Provides generic storage and lookup for application objects.
 public final class Repository<T> {
     private final HashMap<String, T> entities = new HashMap<>();
 

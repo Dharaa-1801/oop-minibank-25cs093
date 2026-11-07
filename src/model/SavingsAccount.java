@@ -1,5 +1,6 @@
 package model;
 
+// Represents a savings account with a minimum balance requirement.
 public class SavingsAccount extends Account implements Premium {
     private static final long serialVersionUID = 1L;
     private final long minBalance;

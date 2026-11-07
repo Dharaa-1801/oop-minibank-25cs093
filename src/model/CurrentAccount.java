@@ -1,5 +1,6 @@
 package model;
 
+// Represents a current account with an overdraft facility.
 public class CurrentAccount extends Account {
     private static final long serialVersionUID = 1L;
     private final long overdraftLimit;

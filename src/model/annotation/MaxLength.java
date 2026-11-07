@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
+// Stores the maximum permitted length of a field.
 public @interface MaxLength {
     int value();
 }

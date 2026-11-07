@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+// Tests deposits, withdrawals, and concurrent account operations.
 class BankServiceTest {
     @Test
     void depositIncreasesBalance() throws Exception {

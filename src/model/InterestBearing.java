@@ -1,5 +1,6 @@
 package model;
 
+// Defines the interest-rate behavior of an account.
 public interface InterestBearing {
     double interestRate();
 

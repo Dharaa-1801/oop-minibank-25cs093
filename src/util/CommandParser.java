@@ -1,5 +1,6 @@
 package util;
 
+// Converts command text into a structured transaction.
 public final class CommandParser {
     private CommandParser() {
     }

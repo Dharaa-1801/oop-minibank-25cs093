@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+// Stores accounts and keeps transaction history.
 public final class AccountStore {
     private final HashMap<String, Account> accounts = new HashMap<>();
     private final ArrayList<String> transactionHistory = new ArrayList<>();

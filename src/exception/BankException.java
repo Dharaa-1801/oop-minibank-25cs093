@@ -1,5 +1,6 @@
 package exception;
 
+// Represents a general banking operation error.
 public class BankException extends Exception {
     public BankException(String message) {
         super(message);

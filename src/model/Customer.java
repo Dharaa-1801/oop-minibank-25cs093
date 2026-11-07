@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 
+// Stores basic customer details used by the bank.
 public class Customer implements Cloneable, Serializable {
     private static final long serialVersionUID = 1L;
     private String name;

@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
+// Writes banking transactions to a log file.
 public final class TransactionLog {
     private TransactionLog() {
     }

@@ -12,6 +12,7 @@ import model.annotation.Id;
 import model.annotation.MaxLength;
 import model.annotation.Positive;
 
+// Provides common properties and operations for all bank accounts.
 public abstract class Account implements Transactable, InterestBearing,
         Comparable<Account>, Serializable {
     private static final long serialVersionUID = 1L;

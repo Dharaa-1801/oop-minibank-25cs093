@@ -1,80 +1,505 @@
-# MiniBank — Object Oriented Programming (CEUE203) Lab Project
+# 🏦 MiniBank – Banking Management System
 
-Across this semester you will build **MiniBank**, a console banking application, one lab at a time. This repository is your workspace. It runs in **GitHub Codespaces**, so you get the same Java environment from any computer — no installation needed.
+A Java-based console banking application designed to manage customer accounts, perform financial transactions, maintain transaction records, and generate banking reports.
 
-The environment is pinned to **JDK 17** (see `.devcontainer/devcontainer.json`), so modern features like `record` and `switch` expressions work for everyone.
+Built using **Java 17**, **Object-Oriented Programming**, and advanced Java concepts.
 
----
-
-## First-time setup
-
-1. **Create a GitHub account** if you don't have one. (Optional but recommended: claim the free Student Developer Pack at `education.github.com/pack` to raise your Codespaces hours.)
-
-2. **Make your own copy of this project.** On the template repository, click **Use this template → Create a new repository**. Name it **`oop-minibank-<your-rollno>`** and set it to **Private**. Create it.
-
-3. **Add your instructor as a collaborator.** In *your* new repo: **Settings → Collaborators → Add people →** type **`<siddharthshah-cse>`** and send the invite. (Your instructor will accept it.)
-
-4. **Open a Codespace.** Click the green **Code** button → **Codespaces** tab → **Create codespace on main**. Wait for it to build — it opens VS Code in your browser with Java ready.
-
-5. **Check it works.** In the terminal at the bottom, run:
-   ```bash
-   java src/Welcome.java
-   ```
-   You should see "MiniBank environment is ready." Then delete `Welcome.java` and start Lab 1.
+<p align="center">
+  <img src="https://img.shields.io/badge/Java-17-orange?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java 17">
+  <img src="https://img.shields.io/badge/Maven-Build%20Tool-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white" alt="Maven">
+  <img src="https://img.shields.io/badge/JUnit-5-green?style=for-the-badge&logo=junit5&logoColor=white" alt="JUnit 5">
+  <img src="https://img.shields.io/badge/Platform-Console-blue?style=for-the-badge" alt="Console Application">
+</p>
 
 ---
 
-## Submitting each lab
+## 📌 Table of Contents
 
-Work on your code, then at the end of every lab **commit and tag** it so your instructor can find that exact version:
+- [Overview](#-overview)
+- [Features](#-features)
+- [Account Types](#-account-types)
+- [Banking Operations](#-banking-operations)
+- [Technology Stack](#-technology-stack)
+- [Project Architecture](#-project-architecture)
+- [Project Structure](#-project-structure)
+- [OOP Concepts](#-object-oriented-programming-concepts)
+- [Advanced Java Concepts](#-advanced-java-concepts)
+- [Getting Started](#-getting-started)
+- [Execution](#-execution)
+- [Testing](#-testing)
+- [Data Storage](#-data-storage)
+- [Screenshots](#-screenshots)
+- [Future Enhancements](#-future-enhancements)
+- [License](#-license)
+
+---
+
+## 🚀 Overview
+
+MiniBank is a menu-driven banking management system developed in Java.
+
+It provides a simple way to manage multiple types of bank accounts and perform essential banking operations through a console interface.
+
+The application demonstrates the practical implementation of software development concepts, including:
+
+- Object-Oriented Programming
+- Exception Handling
+- Collections and Generics
+- Custom Annotations
+- Reflection
+- File Handling
+- Object Serialization
+- Multithreading
+- Unit Testing
+
+The system also maintains transaction records and supports account data persistence using local files.
+
+---
+
+## ✨ Features
+
+| Feature | Description |
+|---|---|
+| 🏦 Account Management | Create and manage different bank accounts |
+| 💰 Deposits | Add money to an account |
+| 💸 Withdrawals | Withdraw money with validation |
+| 🔄 Fund Transfer | Transfer money between accounts |
+| 📄 Account Statements | View account transaction history |
+| 📋 Account Listing | Display available accounts |
+| 🧾 Transaction Logging | Maintain transaction records |
+| 📊 Daily Reports | Generate transaction reports |
+| 💾 Data Persistence | Save and load account information |
+| ⚠️ Exception Handling | Handle invalid operations safely |
+| 🧵 Multithreading | Process concurrent tasks |
+| 🧪 Unit Testing | Test banking service functionality |
+
+---
+
+## 🏦 Account Types
+
+The system supports three types of bank accounts.
+
+<details>
+<summary><b>1. Savings Account</b></summary>
+
+- Designed for regular savings.
+- Supports deposits and withdrawals.
+- Implements account-specific withdrawal rules.
+
+</details>
+
+<details>
+<summary><b>2. Current Account</b></summary>
+
+- Designed for frequent transactions.
+- Supports deposits and withdrawals.
+- Uses account-specific transaction rules.
+
+</details>
+
+<details>
+<summary><b>3. Fixed Deposit Account</b></summary>
+
+- Designed for fixed-term deposits.
+- Supports account-specific interest-related behavior.
+- Uses specialized account rules.
+
+</details>
+
+---
+
+## 💳 Banking Operations
+
+The application supports the following operations:
+
+1. Create a new account.
+2. Deposit money.
+3. Withdraw money.
+4. Transfer funds between accounts.
+5. View account statements.
+6. Display all accounts.
+7. Generate daily transaction reports.
+8. Save account information.
+9. Load previously saved account information.
+
+---
+
+## 🛠️ Technology Stack
+
+| Technology | Usage |
+|---|---|
+| Java 17 | Core programming language |
+| Apache Maven | Project build and dependency management |
+| JUnit 5 | Unit testing |
+| Java Collections Framework | Data management |
+| Java Serialization | Object persistence |
+| ExecutorService | Thread management |
+| Git | Version control |
+| GitHub | Source code hosting |
+
+---
+
+## 🏗️ Project Architecture
+
+The application follows a modular package-based architecture.
+
+```text
+                 ┌──────────────────────┐
+                 │       MiniBank       │
+                 │   Console Interface  │
+                 └──────────┬───────────┘
+                            │
+                 ┌──────────▼───────────┐
+                 │     BankService      │
+                 │   Banking Operations│
+                 └──────────┬───────────┘
+                            │
+             ┌──────────────┼──────────────┐
+             │              │              │
+      ┌──────▼─────┐ ┌──────▼──────┐ ┌─────▼──────┐
+      │   Model    │ │    Util     │ │  Exception │
+      │   Package  │ │   Package   │ │   Package  │
+      └────────────┘ └─────────────┘ └────────────┘
+                            │
+                 ┌──────────▼───────────┐
+                 │    Data Storage      │
+                 │ Serialization / Logs │
+                 └──────────────────────┘
+```
+
+---
+
+## 📂 Project Structure
+
+```text
+oop-minibank-25CS093/
+│
+├── .devcontainer/
+│   └── devcontainer.json
+│
+├── data/
+│   ├── accounts.dat
+│   ├── daily-report.txt
+│   ├── transactions.log
+│   └── logs/
+│       └── transactions.log
+│
+├── src/
+│   │
+│   ├── exception/
+│   │   ├── AccountNotFoundException.java
+│   │   ├── BankException.java
+│   │   ├── InsufficientFundsException.java
+│   │   └── InvalidAmountException.java
+│   │
+│   ├── model/
+│   │   ├── annotation/
+│   │   │   ├── Id.java
+│   │   │   ├── MaxLength.java
+│   │   │   └── Positive.java
+│   │   │
+│   │   ├── Account.java
+│   │   ├── Customer.java
+│   │   ├── CurrentAccount.java
+│   │   ├── FixedDepositAccount.java
+│   │   ├── InterestBearing.java
+│   │   ├── Premium.java
+│   │   ├── SavingsAccount.java
+│   │   ├── Transactable.java
+│   │   └── WithdrawRule.java
+│   │
+│   ├── service/
+│   │   ├── AccountStore.java
+│   │   ├── AccountWorker.java
+│   │   ├── BankInfo.java
+│   │   ├── BankService.java
+│   │   ├── BankSession.java
+│   │   ├── MenuOption.java
+│   │   ├── MiniBank.java
+│   │   ├── TransactionBuffer.java
+│   │   └── TransactionProcessor.java
+│   │
+│   ├── test/
+│   │   └── java/
+│   │       └── service/
+│   │           └── BankServiceTest.java
+│   │
+│   └── util/
+│       ├── AnnotationValidator.java
+│       ├── Command.java
+│       ├── CommandParser.java
+│       ├── ReportGenerator.java
+│       ├── Repository.java
+│       ├── StatementFormatter.java
+│       ├── StatePersister.java
+│       ├── TransactionLog.java
+│       ├── TransactionType.java
+│       └── Validator.java
+│
+├── .gitignore
+├── pom.xml
+└── README.md
+```
+
+### 📦 Package Responsibilities
+
+<details>
+<summary><b>model</b></summary>
+
+Contains account-related classes, customer information, account types, interfaces and custom annotations.
+
+</details>
+
+<details>
+<summary><b>service</b></summary>
+
+Contains the main banking business logic, account management, session handling and transaction processing.
+
+</details>
+
+<details>
+<summary><b>exception</b></summary>
+
+Contains custom exceptions for banking-related errors.
+
+</details>
+
+<details>
+<summary><b>util</b></summary>
+
+Contains validation, command parsing, transaction logging, report generation, persistence and reusable helper components.
+
+</details>
+
+<details>
+<summary><b>test</b></summary>
+
+Contains unit tests for validating banking service functionality.
+
+</details>
+
+---
+
+## 🧠 Object-Oriented Programming Concepts
+
+| Concept | Implementation |
+|---|---|
+| Encapsulation | Controlled access to account data |
+| Inheritance | Specialized account classes |
+| Polymorphism | Account-specific method implementations |
+| Abstraction | Abstract classes and interfaces |
+| Interfaces | Common banking behavior |
+| Exception Handling | Custom banking exceptions |
+
+---
+
+## ⚙️ Advanced Java Concepts
+
+<details>
+<summary><b>Generics</b></summary>
+
+Used to create reusable and type-safe components.
+
+</details>
+
+<details>
+<summary><b>Collections Framework</b></summary>
+
+Used to organize and manage account and transaction data.
+
+</details>
+
+<details>
+<summary><b>Custom Annotations</b></summary>
+
+Custom annotations such as `@Id`, `@MaxLength` and `@Positive` are used for validation-related metadata.
+
+</details>
+
+<details>
+<summary><b>Reflection API</b></summary>
+
+Used to inspect annotation metadata at runtime.
+
+</details>
+
+<details>
+<summary><b>Serialization</b></summary>
+
+Used to store and retrieve account objects from local files.
+
+</details>
+
+<details>
+<summary><b>Multithreading</b></summary>
+
+Uses Java concurrency utilities, synchronization and transaction processing components.
+
+</details>
+
+---
+
+## 💻 Getting Started
+
+### Prerequisites
+
+Install the following:
+
+- Java Development Kit (JDK 17)
+- Apache Maven
+- Git
+- VS Code / IntelliJ IDEA / Eclipse
+
+Verify Java:
 
 ```bash
-git add .
-git commit -m "Lab 1: menu shell"
-git tag lab-01
-git push origin main --tags
+java -version
 ```
 
-Use `lab-02`, `lab-03`, … for later labs. Commit as you finish each class, not all at the end.
+Verify Maven:
+
+```bash
+mvn -version
+```
 
 ---
 
-## Saving your free hours
+## 📥 Installation
 
-- Your Codespace **stops automatically after 30 minutes** of inactivity, but it's good to stop it yourself when you finish (top-left menu → **Stop Current Codespace**).
-- A **stopped codespace still uses storage**. After a lab is graded, **delete** old codespaces at `github.com/codespaces` to stay within your free 15 GB.
-- Always **commit and push before closing** — an unused codespace can be cleaned up automatically.
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Dharaa-1801/oop-minibank-25cs093.git
+```
+
+### 2. Navigate to the Project
+
+```bash
+cd oop-minibank-25cs093
+```
+
+### 3. Build the Project
+
+```bash
+mvn clean package
+```
+
+### 4. Run Unit Tests
+
+```bash
+mvn test
+```
 
 ---
 
-## Folder structure
+## ▶️ Execution
 
-```
-.
-├── .devcontainer/
-│   └── devcontainer.json   # pins JDK 17 + Java tools (do not edit)
-├── .gitignore              # ignores compiled files and runtime data
-└── src/                    # put all your .java files here
+Run the application using:
+
+```bash
+java -jar target/oop-minibank-25cs093-1.0.jar
 ```
 
-From Lab 6 onward you will organise `src/` into packages (`com/minibank/...`).
+The console-based banking menu will start.
 
-## Packaged MiniBank build
+> **Note:** The JAR filename must match the artifact name and version configured in `pom.xml`.
 
-The completed project is under `src/`, organised into `model`, `util`,
-`service`, and `exception` packages.
+---
 
-From the repository root, run:
+## 🧪 Testing
 
-```powershell
-& "C:\maven-mvnd\maven-mvnd\bin\mvnd.exe" clean test package
-java -jar target\oop-minibank-25cs093-1.0.jar
+JUnit 5 is used for unit testing.
+
+Test source:
+
+```text
+src/test/java/service/BankServiceTest.java
 ```
 
-The application stores account state, transaction logs, and the daily report
-under `data/`. The menu supports opening savings/current/fixed-deposit
-accounts, deposits, withdrawals, transfers, statements, account listing, and
-daily report generation. Account state is loaded at startup and saved when the
-application exits.
+Execute tests:
 
-JUnit tests are in `src/test/java/service/BankServiceTest.java`.
+```bash
+mvn test
+```
+
+---
+
+## 💾 Data Storage
+
+The application maintains its runtime data in the `data/` directory.
+
+| File | Purpose |
+|---|---|
+| `accounts.dat` | Serialized account information |
+| `transactions.log` | Transaction records |
+| `logs/transactions.log` | Transaction logging |
+| `daily-report.txt` | Generated daily report |
+
+---
+
+## 📸 Screenshots
+
+Add screenshots of your actual application execution here.
+
+### Main Menu
+
+<!-- Add your main menu screenshot here -->
+
+### Account Creation
+
+<!-- Add your account creation screenshot here -->
+
+### Deposit and Withdrawal
+
+<!-- Add your deposit and withdrawal screenshots here -->
+
+### Fund Transfer
+
+<!-- Add your fund transfer screenshot here -->
+
+### Account Statement
+
+<!-- Add your account statement screenshot here -->
+
+### Daily Transaction Report
+
+<!-- Add your report screenshot here -->
+
+---
+
+## 🔮 Future Enhancements
+
+- Graphical User Interface (GUI).
+- Database integration.
+- Secure login and authentication.
+- Role-based access control.
+- PDF account statement generation.
+- Email and SMS notifications.
+- Online banking support.
+
+---
+
+## 📚 Learning Outcomes
+
+This project provides practical experience in:
+
+- Designing modular Java applications.
+- Applying Object-Oriented Programming principles.
+- Implementing banking business logic.
+- Handling exceptions and validating data.
+- Managing files and serialized objects.
+- Understanding concurrent programming.
+- Writing and executing unit tests.
+- Using Maven and Git for project management.
+
+---
+
+## 📄 License
+
+This project is intended for educational and learning purposes.
+
+---
+
+<p align="center">
+  <b>MiniBank – Simple Banking, Smarter Management 🏦</b>
+</p>

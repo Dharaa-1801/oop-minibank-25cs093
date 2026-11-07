@@ -2,6 +2,7 @@ package util;
 
 import model.Account;
 
+// Formats account details into a readable statement.
 public final class StatementFormatter {
     private StatementFormatter() {
     }
